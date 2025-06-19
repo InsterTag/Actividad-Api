@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Area;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 
-class AreaController extends Controller
+class TeacherController extends Controller
 {
+    
     public function index(Request $request)
     {
-        $query = Area::query();
+        $query = Teacher::query();
 
         if ($request->has('with')) {
             $relations = explode(',', $request->with);
@@ -27,24 +27,28 @@ class AreaController extends Controller
 
 
 
-    protected $area;
+    protected $teacher;
 
-    public function __construct(Area $area)
+    public function __construct(Teacher $teacher)
     {
-        $this->area = $area;
+        $this->teacher = $teacher;
     }
 
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:50',
+            'email' => 'required|string|max:50',
+            'area_id' => 'required|string|max:50',
+            'training_center_id' => 'required|string|max:50',
         ]);
 
-        $areas = $this->area->create($request->all());
+        $teachers = $this->teacher->create($request->all());
 
         return response()->json([
             'message' => 'Usuario creado correctamente',
-            'data' => $areas,
+            'data' => $teachers,
         ], 201);
     }
 }
+

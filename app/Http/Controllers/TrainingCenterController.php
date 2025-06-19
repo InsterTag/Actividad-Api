@@ -8,24 +8,20 @@ use Illuminate\Http\Request;
 
 class TrainingCenterController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(TrainingCenter::select('id', 'name')->get());
+        $query = TrainingCenter::query();
+
+        if ($request->has('with')) {
+            $relations = explode(',', $request->with);
+            $query->include($relations);
+        }
+
+        $filters = $request->all();
+        $query->filterBy($filters);
+
+        return $query->get();
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|max:255',
-        ]);
-
-        $trainning = TrainingCenter::create($request->all());
-        return response()->json($trainning);
-    }
-
-    public function show($id)
-    {
-        $center = TrainingCenter::findOrFail($id);
-        return response()->json($center);
-    }
+    
 }

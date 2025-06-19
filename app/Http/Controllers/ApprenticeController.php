@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Area;
+use App\Models\Apprentice;
 use Illuminate\Http\Request;
 
-class AreaController extends Controller
+class ApprenticeController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Area::query();
+        $query = Apprentice::query();
 
         if ($request->has('with')) {
             $relations = explode(',', $request->with);
@@ -27,24 +26,31 @@ class AreaController extends Controller
 
 
 
-    protected $area;
 
-    public function __construct(Area $area)
+    protected $apprentice;
+
+    public function __construct(Apprentice $apprentice)
     {
-        $this->area = $area;
+        $this->apprentice = $apprentice;
     }
 
     public function create(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:50',
+            'email' => 'required|string|max:50',
+            'cell_number' => 'required|string|max:50',
+            'course_id' => 'required|string|max:50',
+            'computer_id' => 'required|string|max:50',
+
+
         ]);
 
-        $areas = $this->area->create($request->all());
+        $apprentices = $this->apprentice->create($request->all());
 
         return response()->json([
             'message' => 'Usuario creado correctamente',
-            'data' => $areas,
+            'data' => $apprentices,
         ], 201);
     }
 }

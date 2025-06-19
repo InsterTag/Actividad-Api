@@ -11,6 +11,7 @@ class ComputersSeeder extends Seeder
         Computer::insert([
             ['number' => 'PC-001', 'brand' => 'Dell'],
             ['number' => 'PC-002', 'brand' => 'HP'],
+            ['number' => 'PC-003', 'brand' => 'Lenovo'],
         ]);
     }
 }

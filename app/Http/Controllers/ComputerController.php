@@ -6,28 +6,44 @@ use App\Http\Controllers\Controller;
 use App\Models\Computer;
 use Illuminate\Http\Request;
 
+
 class ComputerController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(Computer::select('id', 'name')->get());
+        $query = Computer::query();
+
+        if ($request->has('with')) {
+            $relations = explode(',', $request->with);
+            $query->include($relations);
+        }
+
+        $filters = $request->all();
+        $query->filterBy($filters);
+
+        return $query->get();
     }
 
-    public function store(Request $request)
+
+    protected $computer;
+
+    public function __construct(Computer $computer)
+    {
+        $this->computer = $computer;
+    }
+
+    public function create(Request $request)
     {
         $request->validate([
-            'name' => 'required|max:255',
-            'serial_number' => 'required|max:255',
+            'number' => 'required|string|max:50',
+            'brand' => 'required|string|max:50',
         ]);
 
+        $computers = $this->computer->create($request->all());
 
-        $computer = Computer::create($request->all());
-        return response()->json($computer);
-    }
-
-    public function show($id)
-    {
-        $computer = Computer::findOrFail($id);
-        return response()->json($computer);
+        return response()->json([
+            'message' => 'Usuario creado correctamente',
+            'data' => $computers,
+        ], 201);
     }
 }

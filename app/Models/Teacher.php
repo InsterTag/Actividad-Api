@@ -1,28 +1,32 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Database\Eloquent\Builder;
+
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
-class Area extends Model
+class Teacher extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name','email', 'area_id', 'training_center_id'];
 
-    protected $allowIncluded = ['teachers', 'courses'];
-
-    public function teachers()
+    public function area()
     {
-        return $this->hasMany(Teacher::class);
+        return $this->belongsTo(Area::class);
+    }
+
+    public function trainingCenter()
+    {
+        return $this->belongsTo(TrainingCenter::class);
     }
 
     public function courses()
     {
-        return $this->hasMany(Course::class);
+        return $this->belongsToMany(Course::class, 'course_teacher');
     }
 
     public function scopeInclude($query, $relations)
     {
-        $allowedRelations = ['teachers', 'courses'];
+        $allowedRelations = ['area', 'trainingCenter', 'courses'];
         $validRelations = array_intersect($allowedRelations, $relations);
 
         return $query->with($validRelations);
